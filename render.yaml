@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: soilmoisture-site
+    runtime: python
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "false"
+      # Optional: if you add a Render PostgreSQL, this gets set automatically;
+      # otherwise SQLite will be used (ephemeral).
+      # - key: DATABASE_URL
+      #   fromDatabase:
+      #     name: soilmoisture-postgres
+      #     property: connectionString
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com,https://*.render.com"
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: |
+      python manage.py migrate
+      gunicorn soilmoisture_site.wsgi:application --bind 0.0.0.0:$PORT
+    autoDeploy: true
+# Uncomment to provision a Postgres instance on Render and wire DATABASE_URL automatically.
+# databases:
+#   - name: soilmoisture-postgres
+#     plan: free
