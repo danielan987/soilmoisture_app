@@ -5,7 +5,6 @@ app_name = "core"
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("healthz/", health, name="healthz"),
     path("power/", views.power_view, name="power"),          # HTMX partial: table
     path("forecast/", views.forecast_view, name="forecast"),  # HTMX partial: chart
     path("geocode/", views.geocode_view, name="geocode"),     # JSON response used by app.js
